@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 #define BLUE_LED_PIN 15
-#define RED_LED_PIN 46
+#define RED_LED_PIN 16
 
 const uint8_t short_phase_duration = 70;
 const uint8_t long_phase_duration = 240;
