@@ -40,13 +40,18 @@ void LED_handle() {
       break;
     case FAST:
       blink_led(100);
-    }
+      break;
+    default:
+      digitalWrite(BLUE_LED_PIN, LOW);
+      digitalWrite(RED_LED_PIN, LOW);
+      break;
+  }
 }
 
 bool button_pressed(int pin) {
   int btnState = digitalRead(pin);
   if (btnState == LOW) {
-    int debounceDelayTime = 30;
+    static const int debounceDelayTime = 30;
     delay(debounceDelayTime);
     return digitalRead(pin) == btnState;
   }
