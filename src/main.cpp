@@ -13,7 +13,10 @@ void setup() {
 void loop() {
   uint16_t raw_val = analogRead(ADC_PIN);
   float u_calc = (raw_val / ADC_max) * U_ref;
-  uint32_t u_measure = analogReadMilliVolts(ADC_PIN);
-  Serial.printf("Raw: %d; U_calc: %.2fV; U_m: %dmV\n", raw_val, u_calc, u_measure);
+  float u_measure = analogReadMilliVolts(ADC_PIN) / 1000.0;
+  float error_abs = u_calc - u_measure;
+  float error_percent = (error_abs / u_measure) * 100.0;
+
+  Serial.printf("Raw: %d; U_calc: %.2fV; U_m: %.2fV; Error: %.1f%%\n", raw_val, u_calc, u_measure, error_percent);
   delay(100);
 }
