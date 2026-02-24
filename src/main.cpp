@@ -1,20 +1,19 @@
 #include <Arduino.h>
 
-#define BUTTON_PIN 4
+#define ADC_PIN 15
 
-int16_t counter = 0;
-
-void IRAM_ATTR reaction() {
-  counter++;
-  Serial.printf("\nButton Pressed! Count: %d", counter);
-}
+const float U_ref = 3.3;
+const float ADC_max = 4095.0;
 
 void setup() {
   Serial.begin(115200);
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), reaction, FALLING);
+  analogReadResolution(12);
 }
 
 void loop() {
+  uint16_t raw_val = analogRead(ADC_PIN);
+  float u_calc = (raw_val / ADC_max) * U_ref;
+  uint32_t u_measure = analogReadMilliVolts(ADC_PIN);
+  Serial.printf("Raw: %d; U_calc: %.2fV; U_m: %dmV\n", raw_val, u_calc, u_measure);
   delay(100);
 }
