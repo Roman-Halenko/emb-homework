@@ -9,8 +9,9 @@ void setup() {
   Serial.begin(115200);
 
   led_1.init();
+  led_1.attachBlinker("_______----______");
 }
 
 void loop() {
-
+  led_1.update();
 }
