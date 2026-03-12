@@ -9,7 +9,7 @@ void setup() {
   Serial.begin(115200);
 
   led_1.init();
-  led_1.attachBlinker("_______----______");
+  led_1.attachBlinker(Led::REGULAR);
 }
 
 void loop() {

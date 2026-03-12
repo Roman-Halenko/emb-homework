@@ -25,6 +25,10 @@ class Led {
   public:
     Led(uint8_t pin);
 
+    // Default patterns
+    static constexpr char* REGULAR = "-_";
+    static constexpr char* DOUBLE = "-_-_____";
+
     void init();
     void set(LED_STATE state);
     void toggle();
