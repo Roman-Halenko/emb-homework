@@ -7,7 +7,7 @@ Led::Led(uint8_t pin) {
 
 void Led::init() {
   pinMode(_pin, OUTPUT);
-  set(OFF);
+  digitalWrite(_pin, LOW);
 }
 
 void Led::set(LED_STATE state) {
@@ -29,6 +29,14 @@ void Led::attachBlinker(const char* pattern, uint32_t divDuration, bool repeat) 
   _groupCount = 0;
   _lastTime = millis();
   _running = true;
+}
+
+void Led::toggleBlinkerPattern() {
+  if (_pattern == Led::DOUBLE) {
+    _pattern = Led::REGULAR;
+  } else if (_pattern == Led::REGULAR) {
+    _pattern = Led::DOUBLE;
+  }
 }
 
 void Led::_handleBlinker() {

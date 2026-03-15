@@ -25,3 +25,14 @@ void IRAM_ATTR Button::handleInterrupt() {
     lastClickTime = now;
   }
 }
+
+void Button::onClick(void (*callback)()) {
+  _clickCallback = callback;
+}
+
+void Button::update() {
+  if (clicked) {
+    _clickCallback();
+    clicked = false;
+  }
+}

@@ -33,6 +33,7 @@ class Led {
     void set(LED_STATE state);
     void toggle();
     void attachBlinker(const char* pattern, uint32_t divDuration = 100, bool repeat = true);
+    void toggleBlinkerPattern();
     void update();
 
     LED_STATE state = OFF;
