@@ -1,3 +1,6 @@
+#ifndef Led_h
+#define Led_h
+
 #include <Arduino.h>
 
 enum LED_STATE {
@@ -20,14 +23,16 @@ class Led {
     bool _running = false;
     bool _repeat = true;
 
+    LED_STATE state = OFF;
+
     void _handleBlinker();
 
   public:
     Led(uint8_t pin);
 
     // Default patterns
-    static constexpr char* REGULAR = "-_";
-    static constexpr char* DOUBLE = "-_-_____";
+    static constexpr const char* REGULAR = "-_";
+    static constexpr const char* DOUBLE = "-_-_____";
 
     void init();
     void set(LED_STATE state);
@@ -35,6 +40,6 @@ class Led {
     void attachBlinker(const char* pattern, uint32_t divDuration = 100, bool repeat = true);
     void toggleBlinkerPattern();
     void update();
-
-    LED_STATE state = OFF;
 };
+
+#endif // Led_h
