@@ -5,7 +5,7 @@
 
 volatile bool relayTriggered = false;
 
-const ulong writeInterval = 1200;
+const ulong relayTurnOnInterval = 1200;
 const ulong relayTurnOffDelay = 500;
 const size_t MEASUREMENTS = 10;
 
@@ -29,6 +29,18 @@ void onRelayInterrupt() {
     Serial.printf("Delay = %lu ms\n", results[currentMeasureIdx++]);
 
     relayTriggered = false;
+
+    if (currentMeasureIdx == MEASUREMENTS) {
+      ulong resTotal = 0;
+
+      for(ulong res : results) {
+        resTotal += res;
+      }
+
+      ulong averageDelay = resTotal / MEASUREMENTS;
+
+      Serial.printf("Average delay = %lu ms\n", averageDelay);
+    }
   }
 }
 
@@ -47,7 +59,7 @@ void loop() {
   ulong now = millis();
 
   if (currentMeasureIdx < MEASUREMENTS) {
-    if (now - lastRelayOn >= writeInterval) {
+    if (now - lastRelayOn >= relayTurnOnInterval) {
       attachInterrupt(digitalPinToInterrupt(RELAY_IN), ISR, RISING);
       digitalWrite(RELAY_OUT, HIGH);
       lastRelayOn = now;
