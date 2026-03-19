@@ -14,7 +14,7 @@ Led leds[] = {
 void setup() {
   Serial.begin(115200);
 
-  for (Led led : leds) {
+  for (Led &led : leds) {
     led.init();
   }
 
@@ -24,7 +24,7 @@ void setup() {
 }
 
 void loop() {
-  for (Led led : leds) {
+  for (Led &led : leds) {
     led.update();
   }
 }
