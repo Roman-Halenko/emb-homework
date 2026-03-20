@@ -1,10 +1,9 @@
 #include <Arduino.h>
-#include <Button.h>
+#include "Button.h"
 
 Button* Button::_instance = nullptr;
 
-Button::Button(uint8_t pin) {
-  _pin = pin;
+Button::Button(uint8_t pin) : _pin(pin) {
 }
 
 void Button::init() {

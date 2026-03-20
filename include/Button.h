@@ -1,3 +1,6 @@
+#ifndef Button_h
+#define Button_h
+
 #include <Arduino.h>
 
 class Button_Configurator {
@@ -9,19 +12,19 @@ typedef void (*callbackFunction)(void);
 
 class Button {
   private:
-    uint8_t _pin;
+    volatile const uint8_t _pin;
+    volatile bool clicked = false;
+    unsigned long lastClickTime = 0;
     static void _ISR();
     static Button* _instance;
     callbackFunction _clickCallback = NULL;
+    void handleInterrupt();
 
   public:
     Button(uint8_t pin);
-
     void init();
-    void handleInterrupt();
     void onClick(void (*callback)());
     void update();
-
-    bool clicked = false;
-    unsigned long lastClickTime = 0;
 };
+
+#endif // Button_h
