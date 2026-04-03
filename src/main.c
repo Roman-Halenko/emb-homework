@@ -26,6 +26,14 @@ struct LED_STATE led_state = {1, 0, 0};
 
 int current_state = GO;
 
+static bool IRAM_ATTR blink_alarm_cb(gptimer_handle_t timer, const gptimer_alarm_event_data_t *edata, void *user_ctx) {
+  if (current_state == GO_BLINK) {
+    led_state.green = !led_state.green;
+    gpio_set_level(GREEN_LED, led_state.green);
+  }
+  return false;
+}
+
 static bool IRAM_ATTR alarm_cb(gptimer_handle_t timer, const gptimer_alarm_event_data_t *edata, void *user_ctx) {
 
   current_state = (current_state + 1) % 5;
@@ -37,8 +45,6 @@ static bool IRAM_ATTR alarm_cb(gptimer_handle_t timer, const gptimer_alarm_event
       led_state.red = 0;
       break;
     case GO_BLINK:
-      // #TODO: implement blinking
-      led_state.green = 0;
       break;
     case PREPARE_TO_STOP:
       led_state.green = 0;
@@ -83,26 +89,47 @@ void app_main() {
   gpio_set_level(YELLOW_LED, led_state.yellow);
   gpio_set_level(RED_LED, led_state.red);
 
+  // Main timer
   gptimer_handle_t gptimer = NULL;
   gptimer_config_t timer_config = {
     .clk_src = GPTIMER_CLK_SRC_DEFAULT,
     .direction = GPTIMER_COUNT_UP,
     .resolution_hz = 1 * 1000 * 1000,
   };
-
-  gptimer_new_timer(&timer_config, &gptimer);
-
   gptimer_alarm_config_t alarm_config = {
     .reload_count = 0,
     .alarm_count = PHASE_DURATION_S[current_state] * 1000000,
     .flags.auto_reload_on_alarm = false,
   };
-
-  gptimer_set_alarm_action(gptimer, &alarm_config);
   gptimer_event_callbacks_t cbs = {
     .on_alarm = alarm_cb,
   };
+
+  gptimer_new_timer(&timer_config, &gptimer);
+  gptimer_set_alarm_action(gptimer, &alarm_config);
   gptimer_register_event_callbacks(gptimer, &cbs, NULL);
   gptimer_enable(gptimer);
   gptimer_start(gptimer);
+
+  // Blink timer
+  gptimer_handle_t blink_timer = NULL;
+  gptimer_config_t blink_timer_config = {
+      .clk_src = GPTIMER_CLK_SRC_DEFAULT,
+      .direction = GPTIMER_COUNT_UP,
+      .resolution_hz = 1 * 1000 * 1000,
+  };
+  gptimer_alarm_config_t blink_alarm_config = {
+      .reload_count = 0,
+      .alarm_count = 500000, // 0.5s
+      .flags.auto_reload_on_alarm = true,
+  };
+  gptimer_event_callbacks_t blink_cbs = {
+      .on_alarm = blink_alarm_cb,
+  };
+
+  gptimer_new_timer(&blink_timer_config, &blink_timer);
+  gptimer_set_alarm_action(blink_timer, &blink_alarm_config);
+  gptimer_register_event_callbacks(blink_timer, &blink_cbs, NULL);
+  gptimer_enable(blink_timer);
+  gptimer_start(blink_timer);
 }
