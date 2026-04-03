@@ -24,6 +24,7 @@ struct LED_STATE {
 };
 struct LED_STATE led_state = {1, 0, 0};
 
+const uint64_t BLINK_TIMER_PERIOD = 500000; // 0.5s
 int current_state = GO;
 
 static bool IRAM_ATTR blink_alarm_cb(gptimer_handle_t timer, const gptimer_alarm_event_data_t *edata, void *user_ctx) {
@@ -120,7 +121,7 @@ void app_main() {
   };
   gptimer_alarm_config_t blink_alarm_config = {
       .reload_count = 0,
-      .alarm_count = 500000, // 0.5s
+      .alarm_count = BLINK_TIMER_PERIOD,
       .flags.auto_reload_on_alarm = true,
   };
   gptimer_event_callbacks_t blink_cbs = {
