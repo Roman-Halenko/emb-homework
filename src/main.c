@@ -25,7 +25,6 @@ struct LED_STATE {
 struct LED_STATE led_state = {1, 0, 0};
 
 int current_state = GO;
-int blink_count = 0;
 
 static bool IRAM_ATTR alarm_cb(gptimer_handle_t timer, const gptimer_alarm_event_data_t *edata, void *user_ctx) {
 
