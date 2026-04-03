@@ -13,13 +13,14 @@ ulong lastRelayOn = 0;
 ulong results[MEASUREMENTS];
 
 uint8_t currentMeasureIdx = 0;
+bool isRelayOn = false;
 
 void IRAM_ATTR ISR() {
   relayTriggered = true;
 }
 
 void onRelayInterrupt() {
-  if(relayTriggered) {
+  if(isRelayOn && relayTriggered) {
     // Detaching interrupt since very first rising (no debouncing approach)
     detachInterrupt(RELAY_IN);
 
@@ -59,14 +60,16 @@ void loop() {
   ulong now = millis();
 
   if (currentMeasureIdx < MEASUREMENTS) {
-    if (now - lastRelayOn >= relayTurnOnInterval) {
+    if (!isRelayOn && now - lastRelayOn >= relayTurnOnInterval) {
       attachInterrupt(digitalPinToInterrupt(RELAY_IN), ISR, RISING);
       digitalWrite(RELAY_OUT, HIGH);
+      isRelayOn = true;
       lastRelayOn = now;
     }
 
-    if (now - lastRelayOn >= relayTurnOffDelay) {
+    if (isRelayOn && now - lastRelayOn >= relayTurnOffDelay) {
       digitalWrite(RELAY_OUT, LOW);
+      isRelayOn = false;
     }
 
     onRelayInterrupt();
