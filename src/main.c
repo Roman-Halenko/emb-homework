@@ -106,11 +106,11 @@ void app_main() {
     .on_alarm = alarm_cb,
   };
 
-  gptimer_new_timer(&timer_config, &gptimer);
-  gptimer_set_alarm_action(gptimer, &alarm_config);
-  gptimer_register_event_callbacks(gptimer, &cbs, NULL);
-  gptimer_enable(gptimer);
-  gptimer_start(gptimer);
+  ESP_ERROR_CHECK(gptimer_new_timer(&timer_config, &gptimer));
+  ESP_ERROR_CHECK(gptimer_set_alarm_action(gptimer, &alarm_config));
+  ESP_ERROR_CHECK(gptimer_register_event_callbacks(gptimer, &cbs, NULL));
+  ESP_ERROR_CHECK(gptimer_enable(gptimer));
+  ESP_ERROR_CHECK(gptimer_start(gptimer));
 
   // Blink timer
   gptimer_handle_t blink_timer = NULL;
@@ -128,9 +128,13 @@ void app_main() {
       .on_alarm = blink_alarm_cb,
   };
 
-  gptimer_new_timer(&blink_timer_config, &blink_timer);
-  gptimer_set_alarm_action(blink_timer, &blink_alarm_config);
-  gptimer_register_event_callbacks(blink_timer, &blink_cbs, NULL);
-  gptimer_enable(blink_timer);
-  gptimer_start(blink_timer);
+  ESP_ERROR_CHECK(gptimer_new_timer(&blink_timer_config, &blink_timer));
+  ESP_ERROR_CHECK(gptimer_set_alarm_action(blink_timer, &blink_alarm_config));
+  ESP_ERROR_CHECK(gptimer_register_event_callbacks(blink_timer, &blink_cbs, NULL));
+  ESP_ERROR_CHECK(gptimer_enable(blink_timer));
+  ESP_ERROR_CHECK(gptimer_start(blink_timer));
+
+  while (1) {
+    vTaskDelay(pdMS_TO_TICKS(100));
+  }
 }
