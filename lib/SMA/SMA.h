@@ -3,22 +3,22 @@
 template <size_t N>
 class SMA {
   public:
-    SMA() : m_sum(0), m_index(0) {
-      for (int i = 0; i < N; ++i) m_buffer[i] = 0;
+    SMA() : _sum(0), _index(0) {
+      for (int i = 0; i < N; ++i) _buffer[i] = 0;
     }
 
     uint16_t process(uint16_t newValue) {
-      m_sum -= m_buffer[m_index];
-      m_buffer[m_index] = newValue;
-      m_sum += newValue;
+      _sum -= _buffer[_index];
+      _buffer[_index] = newValue;
+      _sum += newValue;
 
-      m_index = (m_index + 1) % N;
+      _index = (_index + 1) % N;
 
-      return (uint16_t)(m_sum / N);
+      return (uint16_t)(_sum / N);
     }
 
   private:
-    uint16_t m_buffer[N];
-    uint32_t m_sum;
-    int m_index;
+    uint16_t _buffer[N];
+    uint32_t _sum;
+    int _index;
 };
