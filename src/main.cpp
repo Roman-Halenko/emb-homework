@@ -54,10 +54,10 @@ extern "C" void app_main() {
     uint16_t filtered_value = adc_filter.process(adc_raw_val);
 
     if(filtered_value <= SWITCH_POINT - THRESHOLD && led_on) {
-      gpio_set_level(LED_PIN, 0);
+      ESP_ERROR_CHECK(gpio_set_level(LED_PIN, 0));
       led_on = false;
     } else if (filtered_value >= SWITCH_POINT + THRESHOLD && !led_on) {
-      gpio_set_level(LED_PIN, 1);
+      ESP_ERROR_CHECK(gpio_set_level(LED_PIN, 1));
       led_on = true;
     }
 
